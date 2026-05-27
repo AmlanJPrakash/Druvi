@@ -1,12 +1,10 @@
-import { useState, useEffect } from "react";
-import { AlertTriangle, Layers, BookOpen, Scan, HeartPulse, Network } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { AlertTriangle, Layers, BookOpen, Scan, HeartPulse, Network, Check, Shield, Database, FileText } from "lucide-react";
 import Lenis from "lenis";
 import svgPaths from "@/imports/Desktop1-1/svg-sk9h56z0ip";
 
-// Import individual phone screen assets for the phone rise effect
-import screenDashboard from "@/imports/screen_dashboard.png";
-import screenSearch from "@/imports/screen_search.png";
-import screenResults from "@/imports/screen_results.png";
+// Import phone assets for the phone rise effect
+import slideDashboard from "@/imports/slide_dashboard.png";
 import imgGeminiWorld from "@/imports/Desktop1-1/d80c1c68ab9e55b1c076e7a5b0de8075d3415ab9.png";
 import imgFrame from "@/imports/Desktop1-1/35716ce8f6b39c91f8643cb45e2072d456bdc1df.png";
 import imgPerson1 from "@/imports/Desktop1-1/585dae9e98ac83690d1947a227123e61dddd2351.png";
@@ -98,53 +96,20 @@ function PhoneRise() {
     return () => clearTimeout(t);
   }, []);
 
-  const phones = [
-    {
-      src: screenSearch,
-      alt: "DruVI Drug Search screen",
-      paddingTop: "55px",   // push left phone down from top
-      floatDuration: "5.2s",
-      floatDelay: "0.5s",
-      zIndex: 10,
-      scale: 0.86,
-      entryDelay: "0s",
-    },
-    {
-      src: screenDashboard,
-      alt: "DruVI Home Dashboard screen",
-      paddingTop: "0px",    // center: tallest
-      floatDuration: "6.0s",
-      floatDelay: "0s",
-      zIndex: 20,
-      scale: 1,
-      entryDelay: "0.12s",
-    },
-    {
-      src: screenResults,
-      alt: "DruVI Interaction Results screen",
-      paddingTop: "32px",   // right: slightly lower than center
-      floatDuration: "5.7s",
-      floatDelay: "1.1s",
-      zIndex: 10,
-      scale: 0.86,
-      entryDelay: "0.24s",
-    },
-  ];
-
   return (
     <div
-      className="relative w-full max-w-[960px] mx-auto select-none pointer-events-none overflow-visible"
-      style={{ height: "clamp(360px, 48vw, 640px)", marginTop: "4.5rem" }}
+      className="relative w-full max-w-[960px] mx-auto select-none pointer-events-none overflow-visible flex justify-center"
+      style={{ marginTop: "4.5rem" }}
     >
-      {/* Ambient radial glow beneath phones */}
+      {/* Ambient radial glow beneath mockup */}
       <div
         style={{
           position: "absolute",
-          bottom: "-10px",
+          bottom: "-20px",
           left: "50%",
           transform: "translateX(-50%)",
           width: "70%",
-          height: "110px",
+          height: "120px",
           background:
             "radial-gradient(ellipse at center, rgba(39,110,241,0.18) 0%, rgba(39,110,241,0.06) 50%, transparent 78%)",
           filter: "blur(22px)",
@@ -154,62 +119,38 @@ function PhoneRise() {
         }}
       />
 
-      {/* Row of phones */}
+      {/* Outer: entry slide-up transition */}
       <div
         style={{
-          position: "absolute",
-          inset: 0,
+          transform: mounted ? "translateY(0px)" : "translateY(80px)",
+          opacity: mounted ? 1 : 0,
+          transition: "transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 1s ease",
+          zIndex: 10,
+          width: "100%",
           display: "flex",
-          alignItems: "flex-end",
           justifyContent: "center",
-          gap: "clamp(-36px, -3.5vw, -14px)",
         }}
       >
-        {phones.map((phone, i) => (
-          // Outer: entry fade-up + scale; sets vertical stagger via paddingTop
-          <div
-            key={i}
+        {/* Inner: continuous floating animation */}
+        <div
+          style={{
+            animation: mounted ? "phoneFloat 6s ease-in-out infinite alternate" : "none",
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <img
+            src={slideDashboard}
+            alt="DruVI App Mockups"
             style={{
-              position: "relative",
-              zIndex: phone.zIndex,
-              height: "100%",
-              paddingTop: phone.paddingTop,
-              display: "flex",
-              alignItems: "flex-end",
-              transform: mounted
-                ? `translateY(0px) scale(${phone.scale})`
-                : `translateY(100px) scale(${phone.scale})`,
-              opacity: mounted ? 1 : 0,
-              transition: `transform 1.2s cubic-bezier(0.16,1,0.3,1) ${phone.entryDelay}, opacity 1s ease ${phone.entryDelay}`,
-              transformOrigin: "bottom center",
+              maxHeight: "clamp(340px, 46vw, 580px)",
+              width: "auto",
+              objectFit: "contain",
+              display: "block",
             }}
-          >
-            {/* Inner: continuous floating animation only */}
-            <div
-              style={{
-                animation: mounted
-                  ? `phoneFloat ${phone.floatDuration} ease-in-out infinite alternate ${phone.floatDelay}`
-                  : "none",
-                height: "100%",
-                display: "flex",
-                alignItems: "flex-end",
-              }}
-            >
-              <img
-                src={phone.src}
-                alt={phone.alt}
-                style={{
-                  height: "100%",
-                  width: "auto",
-                  objectFit: "contain",
-                  filter:
-                    "drop-shadow(0 28px 44px rgba(0,0,0,0.16)) drop-shadow(0 6px 14px rgba(39,110,241,0.08))",
-                  display: "block",
-                }}
-              />
-            </div>
-          </div>
-        ))}
+          />
+        </div>
       </div>
     </div>
   );
@@ -294,9 +235,9 @@ function SolutionSection() {
   return (
     <section id="solution" className="py-36 bg-[#f6f6f6]">
       <div className="max-w-[1200px] mx-auto px-6 text-center">
-        <p className="reveal-category text-[11px] font-mono uppercase tracking-widest text-[#276ef1] font-bold mb-4" style={{ fontFamily: "Inter, sans-serif" }}>
+        {/* <p className="reveal-category text-[11px] font-mono uppercase tracking-widest text-[#276ef1] font-bold mb-4" style={{ fontFamily: "Inter, sans-serif" }}>
           The Solution
-        </p>
+        </p> */}
         <h2
           className="reveal-heading text-[clamp(32px,4vw,56px)] text-black font-bold tracking-tight leading-[1.2] mb-8"
           style={{ fontFamily: "Inter, sans-serif" }}
@@ -465,48 +406,120 @@ const steps = [
 ];
 
 function HowItWorksSection() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const lineRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [visibleCards, setVisibleCards] = useState<boolean[]>(new Array(steps.length).fill(false));
+
+  // Grow the vertical line on scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      const section = sectionRef.current;
+      const line = lineRef.current;
+      if (!section || !line) return;
+
+      const rect = section.getBoundingClientRect();
+      const windowH = window.innerHeight;
+      // Start growing when section enters viewport, finish when section exits
+      const sectionH = section.offsetHeight;
+      const scrolled = Math.max(0, windowH - rect.top);
+      const progress = Math.min(1, scrolled / (sectionH + windowH * 0.4));
+      line.style.height = `${progress * 100}%`;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Reveal each card as it enters viewport
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+    cardRefs.current.forEach((card, i) => {
+      if (!card) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setVisibleCards((prev) => {
+              const next = [...prev];
+              next[i] = true;
+              return next;
+            });
+            obs.disconnect();
+          }
+        },
+        { threshold: 0.25, rootMargin: "0px 0px -60px 0px" }
+      );
+      obs.observe(card);
+      observers.push(obs);
+    });
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
+
   return (
-    <section id="how-it-works" className="py-36 bg-white">
-      <div className="max-w-[1200px] mx-auto px-6">
-        <p className="reveal-category text-[11px] font-mono uppercase tracking-widest text-[#276ef1] font-bold text-center mb-4" style={{ fontFamily: "Inter, sans-serif" }}>
+    <section ref={sectionRef} id="how-it-works" className="py-36 bg-white overflow-hidden">
+      <div className="max-w-[900px] mx-auto px-6">
+        <p className="text-[11px] font-mono uppercase tracking-widest text-[#276ef1] font-bold text-center mb-4" style={{ fontFamily: "Inter, sans-serif" }}>
           How it works
         </p>
         <h2
-          className="reveal-heading text-[clamp(32px,4vw,56px)] text-black text-center font-bold tracking-tight leading-[1.2] mb-8"
+          className="text-[clamp(32px,4vw,56px)] text-black text-center font-bold tracking-tight leading-[1.2] mb-8"
           style={{ fontFamily: "Inter, sans-serif" }}
         >
           From prescription to
           <br />
           safe decision in seconds
         </h2>
-        <p className="text-lg text-black/60 text-center max-w-2xl mx-auto mb-20 leading-[1.7]" style={{ fontFamily: "Inter, sans-serif" }}>
+        <p className="text-lg text-black/60 text-center max-w-2xl mx-auto mb-24 leading-[1.7]" style={{ fontFamily: "Inter, sans-serif" }}>
           {"DruVI's agentic AI performs live multi-source evidence retrieval, cross-verification, and brand-to-generic normalization at the point of care."}
         </p>
 
-        {/* Phone image + steps */}
+        {/* Vertical timeline */}
         <div className="relative">
-          {/* Large phone image */}
-          <div className="w-full rounded-none border border-black/10 overflow-hidden mb-16 max-h-[560px]">
-            <img src={imgFrame} alt="DruVI app workflow" className="w-full object-cover" />
-          </div>
+          {/* The growing vertical line */}
+          <div
+            className="absolute left-[27px] top-0 bottom-0 w-px bg-black/8"
+            style={{ zIndex: 0 }}
+          />
+          <div
+            ref={lineRef}
+            className="absolute left-[27px] top-0 w-px bg-black transition-none"
+            style={{ height: "0%", zIndex: 1, willChange: "height" }}
+          />
 
-          {/* Steps */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+          {/* Step cards */}
+          <div className="flex flex-col gap-0">
             {steps.map((step, i) => (
               <div
                 key={i}
-                className={`bg-white border border-black/10 rounded-none p-8 flex flex-col gap-3 hover:border-black transition-colors duration-200 ${i === steps.length - 1 && steps.length % 2 !== 0 ? "md:col-span-2 md:max-w-[49%]" : ""
-                  }`}
+                ref={(el) => { cardRefs.current[i] = el; }}
+                className="relative flex items-start gap-8 pb-14"
+                style={{
+                  opacity: visibleCards[i] ? 1 : 0,
+                  transform: visibleCards[i] ? "translateX(0)" : "translateX(48px)",
+                  transition: `opacity 0.6s ease ${i * 0.12}s, transform 0.6s cubic-bezier(0.22,1,0.36,1) ${i * 0.12}s`,
+                }}
               >
-                <span className="text-[#276ef1] text-2xl font-bold font-mono" style={{ fontFamily: "Inter, sans-serif" }}>
-                  {step.num}
-                </span>
-                <h3 className="text-lg font-bold text-black" style={{ fontFamily: "Inter, sans-serif" }}>
-                  {step.title}
-                </h3>
-                <p className="text-sm text-black/60 leading-[1.7]" style={{ fontFamily: "Inter, sans-serif" }}>
-                  {step.desc}
-                </p>
+                {/* Circle node on the line */}
+                <div
+                  className="relative z-10 flex-shrink-0 w-14 h-14 bg-white border-2 flex items-center justify-center"
+                  style={{
+                    borderColor: visibleCards[i] ? "#276ef1" : "#e5e7eb",
+                    transition: `border-color 0.4s ease ${i * 0.12 + 0.3}s`,
+                    fontFamily: "Inter, sans-serif",
+                  }}
+                >
+                  <span className="text-[#276ef1] text-sm font-bold font-mono">{step.num}</span>
+                </div>
+
+                {/* Card content */}
+                <div
+                  className="flex-1 bg-white border border-black/10 p-8 hover:border-black transition-colors duration-200"
+                  style={{ fontFamily: "Inter, sans-serif" }}
+                >
+                  <h3 className="text-xl font-bold text-black mb-3 tracking-tight">{step.title}</h3>
+                  <p className="text-sm text-black/60 leading-[1.7]">{step.desc}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -739,6 +752,374 @@ function Footer() {
   );
 }
 
+// ─── Problem Section ─────────────────────────────────────────────────────────
+
+function ProblemSection() {
+  return (
+    <section id="problem" className="py-36 bg-white">
+      <div className="max-w-[1200px] mx-auto px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+          {/* Left Column */}
+          <div className="lg:col-span-5 flex flex-col justify-start">
+            {/* <p className="reveal-category text-[11px] font-mono uppercase tracking-widest text-[#276ef1] font-bold mb-4" style={{ fontFamily: "Inter, sans-serif" }}>
+              The Problem
+            </p> */}
+            <h2
+              className="reveal-heading text-[clamp(32px,4vw,48px)] text-black font-bold tracking-tight leading-[1.2] mb-6"
+              style={{ fontFamily: "Inter, sans-serif" }}
+            >
+              Medication interactions
+              <br />
+              are silently killing people.
+            </h2>
+            <p className="text-base text-black/60 leading-[1.7] mb-8" style={{ fontFamily: "Inter, sans-serif" }}>
+              Static, rule-based interaction checkers haven't kept up with polypharmacy, chronic disease complexity, or the rise of herbal and nutritional supplements.
+            </p>
+
+            <blockquote className="pl-6 border-l-2 border-black/30 italic text-black/75 text-sm my-6 leading-[1.6]" style={{ fontFamily: "Inter, sans-serif" }}>
+              "The modern prescribing environment has become extremely complex — and most available tools are not keeping up."
+              <cite className="block not-italic text-xs font-semibold text-black/55 mt-2">— WHO Global Pharmacovigilance Report</cite>
+            </blockquote>
+
+            <div className="grid grid-cols-2 gap-6 mt-8 pt-8 border-t border-black/5">
+              <div>
+                <p className="text-3xl font-bold text-black tracking-tight font-sans">23M+</p>
+                <p className="text-xs text-black/50 mt-1 leading-[1.4]">Adverse drug safety reports in WHO VigiBase</p>
+              </div>
+              <div>
+                <p className="text-3xl font-bold text-black tracking-tight font-sans">1 in 4</p>
+                <p className="text-xs text-black/50 mt-1 leading-[1.4]">Hospital admissions linked to preventable ADRs</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="lg:col-span-7">
+            <div className="border border-black/10 rounded-none bg-white divide-y divide-black/10 overflow-hidden">
+              {[
+                {
+                  num: "01",
+                  title: "Drug–Drug interactions",
+                  desc: "Polypharmacy raises the risk of dangerous combinations — negating effectiveness, intensifying toxicity, and causing organ damage or emergency hospitalization."
+                },
+                {
+                  num: "02",
+                  title: "Drug–Food interactions",
+                  desc: "Daily foods — from grapefruit to alcohol to caffeine — interact with common medications in ways most patients and clinicians overlook at the point of care."
+                },
+                {
+                  num: "03",
+                  title: "Drug–Herb interactions",
+                  desc: "Herbal supplements are rarely disclosed to clinicians, creating hidden interaction risks that static databases simply don't capture or update for."
+                },
+                {
+                  num: "04",
+                  title: "Clinician cognitive overload",
+                  desc: "Limited consultation time, thousands of drug molecules, and fragmented tools leave clinicians exposed to prescribing errors and growing medico-legal liability."
+                }
+              ].map((item, index) => (
+                <div key={index} className="p-6 bg-white hover:bg-[#f6f6f6] transition-colors duration-200">
+                  <span className="block text-[11px] font-mono font-semibold text-black/40 mb-1">{item.num}</span>
+                  <h3 className="text-base font-bold text-black mb-1.5" style={{ fontFamily: "Inter, sans-serif" }}>
+                    {item.title}
+                  </h3>
+                  <p className="text-sm text-black/60 leading-[1.6]" style={{ fontFamily: "Inter, sans-serif" }}>
+                    {item.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Who It's For Section ───────────────────────────────────────────────────
+
+function WhoItsForSection() {
+  return (
+    <section id="who-its-for" className="py-36 bg-[#f6f6f6] border-t border-b border-black/5">
+      <div className="max-w-[1200px] mx-auto px-6">
+        <p className="reveal-category text-[11px] font-mono uppercase tracking-widest text-[#276ef1] font-bold text-center mb-4" style={{ fontFamily: "Inter, sans-serif" }}>
+          Who It's For
+        </p>
+        <h2
+          className="reveal-heading text-[clamp(32px,4vw,56px)] text-black text-center font-bold tracking-tight leading-[1.2] mb-16"
+          style={{ fontFamily: "Inter, sans-serif" }}
+        >
+          Built for everyone
+          <br />
+          in the care chain.
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[
+            {
+              emoji: "🧑‍⚕️",
+              title: "Doctors & pharmacists",
+              desc: "Fast, explainable interaction checks during live consultations. Reduce cognitive overload and medico-legal risk at the exact point of prescribing."
+            },
+            {
+              emoji: "🏥",
+              title: "Hospitals & clinics",
+              desc: "Integrates as a CDSS directly into HIS/EMR workflows. SaMD-compliant. API-based deployment with no disruption to existing systems."
+            },
+            {
+              emoji: "💻",
+              title: "Telemedicine platforms",
+              desc: "Automate prescription and supplement safety validation for every patient consultation at scale — without adding clinical headcount."
+            },
+            {
+              emoji: "💊",
+              title: "Pharmacies",
+              desc: "Reduce dispensing errors and improve patient counselling accuracy, particularly where prescription medicines and herbal products are used together."
+            },
+            {
+              emoji: "🙋",
+              title: "Patients",
+              desc: "Understand whether your medicines interact. Check food and supplement safety. Get real transparency over your long-term treatment risks."
+            },
+            {
+              emoji: "🔬",
+              title: "Health-tech & researchers",
+              desc: "Live pharmacovigilance insights and a robust interaction intelligence API for embedding safety checks into any clinical or consumer health platform."
+            }
+          ].map((item, index) => (
+            <div key={index} className="bg-white border border-black/10 rounded-none p-8 flex flex-col gap-5 hover:border-black transition-colors duration-200">
+              <div className="w-10 h-10 rounded-none bg-[#f6f6f6] border border-black/5 flex items-center justify-center text-lg shrink-0 select-none">
+                {item.emoji}
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-black mb-1.5" style={{ fontFamily: "Inter, sans-serif" }}>
+                  {item.title}
+                </h3>
+                <p className="text-sm text-black/60 leading-[1.65]" style={{ fontFamily: "Inter, sans-serif" }}>
+                  {item.desc}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Trust & Compliance Section ──────────────────────────────────────────────
+
+function TrustSection() {
+  return (
+    <section id="trust" className="py-36 bg-white border-b border-black/5">
+      <div className="max-w-[1200px] mx-auto px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+          {/* Left Column */}
+          <div className="lg:col-span-6 flex flex-col justify-start">
+            <p className="reveal-category text-[11px] font-mono uppercase tracking-widest text-[#276ef1] font-bold mb-4" style={{ fontFamily: "Inter, sans-serif" }}>
+              Trust & Compliance
+            </p>
+            <h2
+              className="reveal-heading text-[clamp(32px,4vw,48px)] text-black font-bold tracking-tight leading-[1.2] mb-6"
+              style={{ fontFamily: "Inter, sans-serif" }}
+            >
+              Clinical-grade safety,
+              <br />
+              by design.
+            </h2>
+            <p className="text-base text-black/60 leading-[1.7] mb-12 max-w-xl" style={{ fontFamily: "Inter, sans-serif" }}>
+              DruVI is built to the standards healthcare requires — not retrofitted to meet them later.
+            </p>
+
+            <div className="flex flex-col gap-8">
+              {[
+                {
+                  icon: FileText,
+                  title: "SaMD / CDSS classification",
+                  desc: "Designed to operate as a Software as a Medical Device under international regulatory frameworks including FDA, CE, and TGA guidelines."
+                },
+                {
+                  icon: Database,
+                  title: "Multi-source evidence retrieval",
+                  desc: "Every alert backed by WHO VigiBase, peer-reviewed pharmacology references, clinical trial data, and regulatory drug safety documents."
+                },
+                {
+                  icon: Shield,
+                  title: "Privacy by architecture",
+                  desc: "No patient data is retained. Queries are ephemeral. Designed for HIPAA, PDPA, and GDPR-aligned deployments from day one."
+                }
+              ].map((item, index) => {
+                const IconComponent = item.icon;
+                return (
+                  <div key={index} className="flex gap-5 items-start">
+                    <div className="w-10 h-10 rounded-none bg-[#f6f6f6] border border-black/5 flex items-center justify-center text-black shrink-0">
+                      <IconComponent className="w-5 h-5 stroke-[1.75]" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-black mb-1" style={{ fontFamily: "Inter, sans-serif" }}>
+                        {item.title}
+                      </h3>
+                      <p className="text-xs text-black/60 leading-[1.6]" style={{ fontFamily: "Inter, sans-serif" }}>
+                        {item.desc}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="lg:col-span-6">
+            <div className="border border-black/10 rounded-none bg-white divide-y divide-black/10 overflow-hidden">
+              {[
+                { label: "WHO VigiBase evidence", status: "CONNECTED", type: "connected" },
+                { label: "FDA drug safety database", status: "CONNECTED", type: "connected" },
+                { label: "Peer-reviewed literature", status: "CONNECTED", type: "connected" },
+                { label: "Post-market surveillance", status: "CONNECTED", type: "connected" },
+                { label: "SaMD classification", status: "IN PROGRESS", type: "inprogress" },
+                { label: "Clinical validation (Phase 1)", status: "IN PROGRESS", type: "inprogress" },
+                { label: "HIPAA / PDPA alignment", status: "BY DESIGN", type: "bydesign" }
+              ].map((item, index) => (
+                <div key={index} className="px-6 py-4 flex items-center justify-between text-sm text-black font-semibold bg-white hover:bg-[#f6f6f6]/30 transition-colors duration-200">
+                  <span style={{ fontFamily: "Inter, sans-serif" }}>{item.label}</span>
+                  <span
+                    className={`px-2 py-0.5 text-[10px] font-mono font-bold uppercase tracking-wider border rounded-none shrink-0 ${item.type === "connected"
+                      ? "text-[#09825d] bg-[#e6f7f0] border-[#09825d]/20"
+                      : item.type === "inprogress"
+                        ? "text-[#545454] bg-[#f6f6f6] border-[#545454]/20"
+                        : "text-[#276ef1] bg-[#e8f1ff] border-[#276ef1]/20"
+                      }`}
+                  >
+                    {item.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Business Model / Pricing Section ───────────────────────────────────────
+
+function BusinessModelSection() {
+  return (
+    <section id="pricing" className="py-36 bg-[#f6f6f6]">
+      <div className="max-w-[1200px] mx-auto px-6">
+        <p className="reveal-category text-[11px] font-mono uppercase tracking-widest text-[#276ef1] font-bold text-center mb-4" style={{ fontFamily: "Inter, sans-serif" }}>
+          Business Model
+        </p>
+        <h2
+          className="reveal-heading text-[clamp(32px,4vw,56px)] text-black text-center font-bold tracking-tight leading-[1.2] mb-16"
+          style={{ fontFamily: "Inter, sans-serif" }}
+        >
+          Flexible plans for every
+          <br />
+          part of the care chain.
+        </h2>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+          {/* Card 1 */}
+          <div className="bg-white border border-black/10 rounded-none p-8 flex flex-col justify-between hover:border-black transition-colors duration-200 relative">
+            <div>
+              <span className="text-[10px] font-mono font-bold text-black/45 tracking-widest uppercase">FOR PATIENTS</span>
+              <h3 className="text-xl font-bold text-black mt-1" style={{ fontFamily: "Inter, sans-serif" }}>Consumer App</h3>
+              <p className="mt-4" style={{ fontFamily: "Inter, sans-serif" }}>
+                <span className="text-2xl font-bold text-black">Free</span>{" "}
+                <span className="text-sm italic font-normal text-black/50">to start</span>
+              </p>
+              <p className="text-sm text-black/60 mt-4 leading-[1.6]" style={{ fontFamily: "Inter, sans-serif" }}>
+                Personal medication safety checker. Know if your medicines, foods, or supplements interact before it's too late.
+              </p>
+              <div className="border-t border-black/10 my-6" />
+              <ul className="flex flex-col gap-3">
+                {[
+                  "Drug–Drug interaction checks",
+                  "Drug–Food checks",
+                  "Medication reminders",
+                  "Prescription scan (basic)"
+                ].map((feat, index) => (
+                  <li key={index} className="flex items-start gap-2.5 text-sm text-black/70" style={{ fontFamily: "Inter, sans-serif" }}>
+                    <Check className="w-4 h-4 text-[#276ef1] shrink-0 mt-0.5" />
+                    <span>{feat}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Card 2 (Highlighted) */}
+          <div className="bg-white border-2 border-black rounded-none p-8 flex flex-col justify-between hover:shadow-lg transition-all duration-200 relative">
+            {/* Highlighted tag badge */}
+            <div className="absolute top-0 right-6 -translate-y-1/2 bg-black text-white text-[9px] font-mono font-bold tracking-widest px-2.5 py-1 uppercase">
+              RECOMMENDED
+            </div>
+            <div>
+              <span className="text-[10px] font-mono font-bold text-[#276ef1] tracking-widest uppercase">FOR CLINICIANS</span>
+              <h3 className="text-xl font-bold text-black mt-1" style={{ fontFamily: "Inter, sans-serif" }}>SaaS Platform</h3>
+              <p className="mt-4" style={{ fontFamily: "Inter, sans-serif" }}>
+                <span className="text-2xl font-bold text-black">Contact</span>{" "}
+                <span className="text-sm italic font-normal text-black/50">for pricing</span>
+              </p>
+              <p className="text-sm text-black/60 mt-4 leading-[1.6]" style={{ fontFamily: "Inter, sans-serif" }}>
+                Full clinical-grade interaction intelligence for doctors, pharmacists, and clinics. EHR-ready with evidence traceability.
+              </p>
+              <div className="border-t border-black/10 my-6" />
+              <ul className="flex flex-col gap-3">
+                {[
+                  "Everything in Consumer",
+                  "Drug–Herb interactions",
+                  "AI prescription scanning",
+                  "Full evidence citations",
+                  "Clinical recommendations",
+                  "Priority support"
+                ].map((feat, index) => (
+                  <li key={index} className="flex items-start gap-2.5 text-sm text-black/70" style={{ fontFamily: "Inter, sans-serif" }}>
+                    <Check className="w-4 h-4 text-[#276ef1] shrink-0 mt-0.5" />
+                    <span className="font-semibold text-black">{feat}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* Card 3 */}
+          <div className="bg-white border border-black/10 rounded-none p-8 flex flex-col justify-between hover:border-black transition-colors duration-200 relative">
+            <div>
+              <span className="text-[10px] font-mono font-bold text-black/45 tracking-widest uppercase">FOR PLATFORMS</span>
+              <h3 className="text-xl font-bold text-black mt-1" style={{ fontFamily: "Inter, sans-serif" }}>API-as-a-Service</h3>
+              <p className="mt-4" style={{ fontFamily: "Inter, sans-serif" }}>
+                <span className="text-2xl font-bold text-black">Pay-per-use</span>
+              </p>
+              <p className="text-sm text-black/60 mt-4 leading-[1.6]" style={{ fontFamily: "Inter, sans-serif" }}>
+                Embed DruVI's interaction intelligence into your telemedicine, HIS, or health-tech product via a clean, documented API.
+              </p>
+              <div className="border-t border-black/10 my-6" />
+              <ul className="flex flex-col gap-3">
+                {[
+                  "Full API access",
+                  "HIS / EMR integration",
+                  "White-label options",
+                  "Dedicated onboarding",
+                  "SLA guarantees"
+                ].map((feat, index) => (
+                  <li key={index} className="flex items-start gap-2.5 text-sm text-black/70" style={{ fontFamily: "Inter, sans-serif" }}>
+                    <Check className="w-4 h-4 text-[#276ef1] shrink-0 mt-0.5" />
+                    <span>{feat}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 // ─── App ──────────────────────────────────────────────────────────────────────
 
 export default function App() {
@@ -793,11 +1174,15 @@ export default function App() {
       <Navbar />
       <main>
         <Hero />
+        <ProblemSection />
         <SolutionSection />
         <FeaturesSection />
         <StatsSection />
         <HowItWorksSection />
+        <WhoItsForSection />
         <ComparisonSection />
+        <TrustSection />
+        <BusinessModelSection />
         <TeamSection />
         <CTASection />
       </main>
