@@ -5,14 +5,14 @@
 /* Scroll Reveal: Fade-In to Bold/Medium animation */
 .reveal-heading,
 .reveal-category {
-  opacity: 0.3;
+  opacity: 0.35;
   font-weight: 400 !important;
-  transform: translateY(20px);
-  filter: blur(1px);
-  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
-    font-weight 1.2s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
-    filter 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transform: translateY(15px);
+  filter: blur(0.5px);
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+    font-weight 1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reveal-heading.reveal-active {
@@ -24,7 +24,7 @@
 
 .reveal-category.reveal-active {
   opacity: 1;
-  font-weight: 500 !important;
+  font-weight: 600 !important;
   transform: translateY(0);
   filter: blur(0);
 }
@@ -49,4 +49,14 @@ html.lenis body {
 
 .lenis.lenis-scrolling iframe {
   pointer-events: none;
+}
+
+/* ── Phone Rise: floating animation ─────────────────────────────── */
+@keyframes phoneFloat {
+  0% {
+    transform: translateY(0px);
+  }
+  100% {
+    transform: translateY(-16px);
+  }
 }
